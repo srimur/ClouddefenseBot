@@ -9,7 +9,6 @@ This repository contains a Flask application that serves as a chatbot for CloudD
 - [Running the Application](#running-the-application)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- 
 
 ## Prerequisites
 
