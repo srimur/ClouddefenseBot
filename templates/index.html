@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #161857;
+        }
+
+        /* Chatbot icon styling */
+        #chatbot-icon-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            padding: 10px;
+            border-radius: 25px;
+        }
+
+        #chatbot-icon {
+            width: 30px;
+            height: 30px;
+        }
+
+        #chatbot-icon img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #chatbot-text {
+            margin-left: 5px;
+            font-size: 0.875rem;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Chat container styling */
+        .chat-container {
+            width: 450px; /* Increased width for a more spacious feel */
+            background-color: #fff;
+            color: #007bff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Increased shadow effect */
+            border-radius: 12px;
+            display: none; /* Hide initially */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            background-color: #007bff; /* Blue background */
+            padding: 15px;
+            box-sizing: border-box; /* Include padding in the width */
+            border-radius: 12px 12px 0 0; /* Rounded top corners */
+        }
+
+        .chat-header img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%; /* Circular avatar */
+        }
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.4em;
+            color: #fff; /* White text */
+        }
+
+        .close-btn {
+            margin-left: auto;
+            font-size: 1.8em;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .chat-log {
+            height: 350px; /* Increased height for more message history */
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .message {
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 12px;
+            word-wrap: break-word;
+            animation: fadeIn 0.5s ease;
+            max-width: calc(100% - 24px);
+            position: relative; /* Ensure position for animation */
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: #fff;
+            align-self: flex-end;
+            text-align: left;
+            margin-left: auto;
+            border-radius: 12px 12px 0 12px; /* Rounded bottom-right corner */
+            animation: slideInUser 0.5s ease;
+        }
+
+        .user-message span {
+            display: block;
+            padding: 10px;
+        }
+
+        .bot-message {
+            background-color: #ccc;
+            color: black;
+            align-self: flex-start;
+            text-align: left;
+            margin-right: auto;
+            border-radius: 12px 12px 12px 0; /* Rounded bottom-left corner */
+            animation: slideInBot 0.5s ease;
+        }
+
+        .bot-message span {
+            display: block;
+            padding: 10px;
+        }
+
+        .loading-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: fadeIn 0.3s ease;
+            z-index: 1;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            border-radius: 0 0 12px 12px; /* Rounded bottom corners */
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px 0 0 6px;
+            font-size: 1.1rem;
+            outline: none; /* Remove default input focus outline */
+        }
+
+        .chat-input button {
+            padding: 12px 24px; /* Larger padding for button */
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3; /* Darker shade of blue on hover */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUser {
+            0% {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInBot {
+            0% {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbot-icon-container">
+        <div id="chatbot-icon">
+            <!-- <img src="{{ url_for('static', filename='chatbot-icon.png') }}" alt="Chatbot Icon"> -->
+        </div>
+        <div id="chatbot-text">Help ?</div>
+    </div>
+    <div class="chat-container" id="chat-container">
+        <div class="chat-header">
+            <img src="{{ url_for('static', filename='chatbot-icon.png') }}" alt="Chatbot Icon">
+            <div>
+                <h2>CloudDefenseBot</h2>
+            </div>
+            <span class="close-btn" id="close-chat">&times;</span>
+        </div>
+        <div class="chat-log" id="messages">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your query here...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('chatbot-icon-container').addEventListener('click', function() {
+            var chatContainer = document.getElementById('chat-container');
+            if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
+                chatContainer.style.display = 'block';
+            } else {
+                chatContainer.style.display = 'none';
+            }
+        });
+
+        document.getElementById('close-chat').addEventListener('click', function() {
+            document.getElementById('chat-container').style.display = 'none';
+        });
+
+        function sendMessage() {
+            var input = document.getElementById("userInput");
+            var message = input.value.trim();
+            if (message === "") return;
+
+            var messages = document.getElementById("messages");
+
+            // Create user message element with animation
+            var userMessage = document.createElement("div");
+            userMessage.innerHTML = `<span>${message}</span>`;
+            userMessage.className = "message user-message";
+            messages.appendChild(userMessage);
+
+            // Scroll to bottom after adding the user message
+            scrollToBottom();
+
+            input.value = "";
+
+            // Simulate bot response after a short delay (for demonstration)
+            setTimeout(function() {
+                // Create a loading animation
+                var loadingContainer = document.createElement("div");
+                loadingContainer.className = "loading-container";
+                var loadingSpinner = document.createElement("div");
+                loadingSpinner.className = "loading-spinner";
+                loadingContainer.appendChild(loadingSpinner);
+                messages.appendChild(loadingContainer);
+
+                // Scroll to bottom after adding the loading animation
+                scrollToBottom();
+
+                fetch('/answer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ question: message })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Remove the loading animation
+                        messages.removeChild(loadingContainer);
+
+                        // Create bot message element with actual response and animation
+                        var botMessage = document.createElement("div");
+                        botMessage.innerHTML = `<span>${data.answer}</span>`;
+                        botMessage.className = "message bot-message";
+                        messages.appendChild(botMessage);
+
+                        // Scroll to bottom after adding the bot message
+                        // scrollToBottom();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Remove the loading animation on error
+                        messages.removeChild(loadingContainer);
+
+                        // Display error message
+                        var errorMessage = document.createElement("div");
+                        errorMessage.textContent = "Failed to get response. Please try again later.";
+                        errorMessage.className = "message bot-message";
+                        messages.appendChild(errorMessage);
+
+                        // Scroll to bottom after adding the error message
+                        scrollToBottom();
+                    });
+            }, 500);
+        }
+
+        function scrollToBottom() {
+            var messagesLog = document.getElementById("messages");
+            messagesLog.scrollTop = messagesLog.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+
