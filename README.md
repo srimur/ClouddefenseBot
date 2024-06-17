@@ -1,4 +1,4 @@
-# CloudDefenseBot
+# ClouddefenseBot
 
 This repository contains a Flask application that serves as a chatbot for CloudDefense.ai
 ## Table of Contents
