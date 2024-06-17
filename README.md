@@ -1,7 +1,6 @@
 # CloudDefenseBot
 
-This repository contains a Flask application that serves as a chatbot for CloudDefense.ai. The chatbot fetches support articles from the CloudDefense support website and uses OpenAI's GPT model to provide relevant answers to user queries.
-
+This repository contains a Flask application that serves as a chatbot for CloudDefense.ai
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
