@@ -2,3 +2,5 @@ venv/
 .env
 data/
 .anima/
+*.pyc
+__pycache__/
