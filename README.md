@@ -1,6 +1,8 @@
 # CloudDefenseBot
 
 This repository contains a Flask application that serves as a chatbot for CloudDefense.ai
+This project utilizes LangChain's Conversational Retrieval Chain to develop a customer support agent. The system integrates OpenAI's GPT-3.5-turbo and ChromaDB vector storage to provide context-aware responses to user queries. The project includes mechanisms for prompt customization and retrieval-based response generation, ensuring that the model delivers relevant information based on the available data (trained on support knowledge base) and prior conversation context.
+
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
