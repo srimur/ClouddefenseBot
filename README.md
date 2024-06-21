@@ -65,6 +65,12 @@ Before you begin, ensure you have the following:
 ```
 ClouddefenseBot/
 │
+|
+├── chatbot/
+│   └── chat_logic.py
+|   └── init.py
+|   └── fech_data.py
+|   └── process_data.py
 ├── app.py                       # Main Flask application
 ├── templates/
 │   └── index.html               # HTML template for the web interface
